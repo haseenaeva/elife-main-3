@@ -57,6 +57,27 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
+        kerala: {
+          green: "hsl(var(--kerala-green))",
+          "green-light": "hsl(var(--kerala-green-light))",
+          gold: "hsl(var(--kerala-gold))",
+          "gold-light": "hsl(var(--kerala-gold-light))",
+          cream: "hsl(var(--kerala-cream))",
+          earth: "hsl(var(--kerala-earth))",
+        },
+        division: {
+          farmelife: "hsl(var(--farmelife))",
+          organelife: "hsl(var(--organelife))",
+          foodelife: "hsl(var(--foodelife))",
+          entrelife: "hsl(var(--entrelife))",
+          embryo: "hsl(var(--embryo))",
+          aval: "hsl(var(--aval))",
+          pennyekart: "hsl(var(--pennyekart))",
+        },
+      },
+      fontFamily: {
+        sans: ['Inter', 'system-ui', 'sans-serif'],
+        display: ['Poppins', 'system-ui', 'sans-serif'],
       },
       borderRadius: {
         lg: "var(--radius)",
