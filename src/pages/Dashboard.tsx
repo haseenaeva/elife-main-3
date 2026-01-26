@@ -1,210 +1,27 @@
 import { useAuth } from "@/hooks/useAuth";
-import { Layout } from "@/components/layout/Layout";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
-import { 
-  Users, 
-  Building2, 
-  MapPin, 
-  Shield,
-  LogOut,
-  Calendar,
-  Layers
-} from "lucide-react";
-import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
-
-interface DivisionInfo {
-  id: string;
-  name: string;
-  description: string | null;
-}
+import { Navigate } from "react-router-dom";
+import { Loader2 } from "lucide-react";
 
 export default function Dashboard() {
-  const { user, isSuperAdmin, isAdmin, signOut, adminData, adminToken } = useAuth();
-  const [divisionInfo, setDivisionInfo] = useState<DivisionInfo | null>(null);
+  const { isSuperAdmin, isAdmin, isLoading } = useAuth();
 
-  useEffect(() => {
-    const fetchDivisionInfo = async () => {
-      if (adminData?.division_id) {
-        const { data } = await supabase
-          .from("divisions")
-          .select("id, name, description")
-          .eq("id", adminData.division_id)
-          .single();
-        
-        if (data) {
-          setDivisionInfo(data);
-        }
-      }
-    };
-
-    fetchDivisionInfo();
-  }, [adminData]);
-
-  const getRoleLabel = () => {
-    if (isSuperAdmin) return "Super Admin";
-    if (isAdmin) return "Admin";
-    return "Member";
-  };
-
-  const getDisplayName = () => {
-    if (adminToken && divisionInfo) {
-      return `Admin - ${divisionInfo.name}`;
-    }
-    return user?.email || "User";
-  };
-
-  return (
-    <Layout>
-      <div className="container py-8">
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8 gap-4">
-          <div>
-            <h1 className="text-3xl font-bold text-foreground">Dashboard</h1>
-            <p className="text-muted-foreground">
-              Welcome back, {getDisplayName()}
-            </p>
-            {divisionInfo && !isSuperAdmin && (
-              <p className="text-sm text-primary mt-1">
-                Managing: {divisionInfo.name}
-              </p>
-            )}
-          </div>
-          <div className="flex items-center gap-4">
-            <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-sm font-medium">
-              <Shield className="h-4 w-4" />
-              {getRoleLabel()}
-            </span>
-            <Button variant="outline" onClick={signOut}>
-              <LogOut className="h-4 w-4 mr-2" />
-              Sign Out
-            </Button>
-          </div>
-        </div>
-
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {/* Super Admin & Admin: Manage Members */}
-          {isAdmin && (
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Users className="h-5 w-5 text-primary" />
-                  Members
-                </CardTitle>
-                <CardDescription>
-                  Manage cluster members
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <Button asChild className="w-full">
-                  <Link to="/admin/members">View Members</Link>
-                </Button>
-              </CardContent>
-            </Card>
-          )}
-
-          {/* Admin & Super Admin: Manage Clusters */}
-          {isAdmin && (
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Layers className="h-5 w-5 text-primary" />
-                  Clusters
-                </CardTitle>
-                <CardDescription>
-                  Create and manage clusters
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <Button asChild className="w-full">
-                  <Link to="/admin/clusters">Manage Clusters</Link>
-                </Button>
-              </CardContent>
-            </Card>
-          )}
-
-          {/* Super Admin: Manage Admins */}
-          {isSuperAdmin && (
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Shield className="h-5 w-5 text-primary" />
-                  Admins
-                </CardTitle>
-                <CardDescription>
-                  Manage division administrators
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <Button asChild className="w-full">
-                  <Link to="/admin/admins">Manage Admins</Link>
-                </Button>
-              </CardContent>
-            </Card>
-          )}
-
-          {/* Super Admin: Manage Divisions */}
-          {isSuperAdmin && (
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Building2 className="h-5 w-5 text-primary" />
-                  Divisions
-                </CardTitle>
-                <CardDescription>
-                  Manage organization divisions
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <Button asChild className="w-full">
-                  <Link to="/admin/divisions">Manage Divisions</Link>
-                </Button>
-              </CardContent>
-            </Card>
-          )}
-
-          {/* Super Admin: Manage Locations */}
-          {isSuperAdmin && (
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <MapPin className="h-5 w-5 text-primary" />
-                  Locations
-                </CardTitle>
-                <CardDescription>
-                  Manage panchayaths & clusters
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <Button asChild className="w-full">
-                  <Link to="/admin/locations">Manage Locations</Link>
-                </Button>
-              </CardContent>
-            </Card>
-          )}
-
-          {/* Admin: Programs Management */}
-          {isAdmin && (
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Calendar className="h-5 w-5 text-primary" />
-                  Programs
-                </CardTitle>
-                <CardDescription>
-                  Create and manage programs, registrations & modules
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <Button asChild className="w-full">
-                  <Link to="/admin/programs">Manage Programs</Link>
-                </Button>
-              </CardContent>
-            </Card>
-          )}
-        </div>
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
       </div>
-    </Layout>
-  );
+    );
+  }
+
+  // Route to appropriate dashboard based on role
+  if (isSuperAdmin) {
+    return <Navigate to="/super-admin" replace />;
+  }
+
+  if (isAdmin) {
+    return <Navigate to="/admin-dashboard" replace />;
+  }
+
+  // Non-admin users go to unauthorized
+  return <Navigate to="/unauthorized" replace />;
 }

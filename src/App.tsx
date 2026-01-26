@@ -21,6 +21,8 @@ import LocationsManagement from "./pages/admin/LocationsManagement";
 import ClustersManagement from "./pages/admin/ClustersManagement";
 import ProgramsManagement from "./pages/admin/ProgramsManagement";
 import ProgramDetail from "./pages/admin/ProgramDetail";
+import AdminDashboard from "./pages/admin/AdminDashboard";
+import SuperAdminDashboard from "./pages/admin/SuperAdminDashboard";
 
 const queryClient = new QueryClient();
 
@@ -42,12 +44,32 @@ const App = () => (
             <Route path="/auth" element={<Auth />} />
             <Route path="/unauthorized" element={<Unauthorized />} />
 
-            {/* Protected routes */}
+            {/* Protected routes - Dashboard redirect */}
             <Route
               path="/dashboard"
               element={
                 <ProtectedRoute>
                   <Dashboard />
+                </ProtectedRoute>
+              }
+            />
+
+            {/* Admin Dashboard */}
+            <Route
+              path="/admin-dashboard"
+              element={
+                <ProtectedRoute requiredRoles={["admin"]}>
+                  <AdminDashboard />
+                </ProtectedRoute>
+              }
+            />
+
+            {/* Super Admin Dashboard */}
+            <Route
+              path="/super-admin"
+              element={
+                <ProtectedRoute requiredRoles={["super_admin"]}>
+                  <SuperAdminDashboard />
                 </ProtectedRoute>
               }
             />
