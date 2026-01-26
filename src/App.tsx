@@ -9,6 +9,7 @@ import Index from "./pages/Index";
 import About from "./pages/About";
 import Divisions from "./pages/Divisions";
 import Programs from "./pages/Programs";
+import ProgramPublic from "./pages/ProgramPublic";
 import Contact from "./pages/Contact";
 import NotFound from "./pages/NotFound";
 import Auth from "./pages/Auth";
@@ -18,6 +19,8 @@ import AdminsManagement from "./pages/admin/AdminsManagement";
 import MembersManagement from "./pages/admin/MembersManagement";
 import LocationsManagement from "./pages/admin/LocationsManagement";
 import ClustersManagement from "./pages/admin/ClustersManagement";
+import ProgramsManagement from "./pages/admin/ProgramsManagement";
+import ProgramDetail from "./pages/admin/ProgramDetail";
 
 const queryClient = new QueryClient();
 
@@ -34,6 +37,7 @@ const App = () => (
             <Route path="/about" element={<About />} />
             <Route path="/divisions" element={<Divisions />} />
             <Route path="/programs" element={<Programs />} />
+            <Route path="/program/:id" element={<ProgramPublic />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="/unauthorized" element={<Unauthorized />} />
@@ -84,6 +88,24 @@ const App = () => (
               element={
                 <ProtectedRoute requiredRoles={["admin", "super_admin"]}>
                   <MembersManagement />
+                </ProtectedRoute>
+              }
+            />
+
+            {/* Admin routes - Admin & Super Admin: Programs */}
+            <Route
+              path="/admin/programs"
+              element={
+                <ProtectedRoute requiredRoles={["admin", "super_admin"]}>
+                  <ProgramsManagement />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/programs/:id"
+              element={
+                <ProtectedRoute requiredRoles={["admin", "super_admin"]}>
+                  <ProgramDetail />
                 </ProtectedRoute>
               }
             />

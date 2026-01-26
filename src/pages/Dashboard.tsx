@@ -184,7 +184,7 @@ export default function Dashboard() {
             </Card>
           )}
 
-          {/* Admin: Programs (placeholder for future) */}
+          {/* Admin: Programs Management */}
           {isAdmin && (
             <Card>
               <CardHeader>
@@ -193,12 +193,12 @@ export default function Dashboard() {
                   Programs
                 </CardTitle>
                 <CardDescription>
-                  Create and manage programs
+                  Create and manage programs, registrations & modules
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <Button asChild variant="outline" className="w-full">
-                  <Link to="/programs">View Programs</Link>
+                <Button asChild className="w-full">
+                  <Link to="/admin/programs">Manage Programs</Link>
                 </Button>
               </CardContent>
             </Card>
