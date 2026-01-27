@@ -18,7 +18,7 @@ export function HeroSection() {
           </p>
           
           <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold text-foreground leading-tight mb-6">
-            Empowering Women,{" "}
+            ഓരോ വീടും ഒരു സംരംഭം ,{" "}
             <span className="text-primary">Building Kerala</span>
           </h1>
           
