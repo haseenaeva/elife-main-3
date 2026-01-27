@@ -1,10 +1,9 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Layout } from "@/components/layout/Layout";
-import { Calendar, Clock, MapPin, Users, Filter, Loader2 } from "lucide-react";
+import { Calendar, MapPin, Filter, Loader2 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import {
   Select,
   SelectContent,
@@ -14,6 +13,26 @@ import {
 } from "@/components/ui/select";
 import { supabase } from "@/integrations/supabase/client";
 import { format } from "date-fns";
+
+// Import division logos
+import farmelifeLogo from "@/assets/divisions/farmelife.png";
+import organelifeLogo from "@/assets/divisions/organelife.png";
+import foodelifeLogo from "@/assets/divisions/foodelife.png";
+import entrelifeLogo from "@/assets/divisions/entrelife.png";
+import embryoLogo from "@/assets/divisions/embryo.png";
+import avalLogo from "@/assets/divisions/aval.jpg";
+import pennyekartLogo from "@/assets/divisions/pennyekart.png";
+
+// Division metadata with Malayalam names and logos
+const divisionMeta: Record<string, { nameMl: string; logo: string }> = {
+  farmelife: { nameMl: "ഫാർമെലൈഫ്", logo: farmelifeLogo },
+  organelife: { nameMl: "ഓർഗനെലൈഫ്", logo: organelifeLogo },
+  foodelife: { nameMl: "ഫുഡെലൈഫ്", logo: foodelifeLogo },
+  entrelife: { nameMl: "എന്ററലൈഫ്", logo: entrelifeLogo },
+  embryo: { nameMl: "എംബ്രിയോ", logo: embryoLogo },
+  aval: { nameMl: "അവൾ", logo: avalLogo },
+  pennyekart: { nameMl: "പെന്നിക്കാർട്ട്", logo: pennyekartLogo },
+};
 
 interface Division {
   id: string;
@@ -144,60 +163,77 @@ const Programs = () => {
             </div>
           ) : (
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {visiblePrograms.map((program) => (
-                <Card key={program.id} className="flex flex-col hover:shadow-lg transition-shadow">
-                  <CardHeader>
-                    <div className="flex items-start justify-between gap-2 mb-2">
-                      <Badge
-                        variant="secondary"
-                        style={{
-                          backgroundColor: program.division?.color || undefined,
-                          color: program.division?.color ? "white" : undefined,
-                        }}
-                      >
-                        {program.division?.name || "Unknown"}
-                      </Badge>
+              {visiblePrograms.map((program) => {
+                const divisionKey = program.division?.color || program.division?.name?.toLowerCase() || "";
+                const meta = divisionMeta[divisionKey];
+                
+                return (
+                  <Card key={program.id} className="flex flex-col hover:shadow-lg transition-shadow border-border/50 overflow-hidden">
+                    {/* Division Header with Logo */}
+                    <div className="bg-gradient-to-r from-secondary to-secondary/50 p-4 border-b border-border/30">
+                      <div className="flex items-center gap-4">
+                        {meta?.logo && (
+                          <div className="h-16 w-16 flex-shrink-0 bg-card rounded-lg p-1.5 shadow-sm">
+                            <img 
+                              src={meta.logo} 
+                              alt={program.division?.name || "Division"} 
+                              className="h-full w-full object-contain"
+                            />
+                          </div>
+                        )}
+                        <div className="flex-1 min-w-0">
+                          <h3 className="font-display font-semibold text-lg text-foreground">
+                            {program.division?.name || "Unknown"}
+                          </h3>
+                          {meta?.nameMl && (
+                            <p className="text-sm text-muted-foreground">{meta.nameMl}</p>
+                          )}
+                        </div>
+                      </div>
                     </div>
-                    <CardTitle className="text-lg leading-tight">{program.name}</CardTitle>
-                  </CardHeader>
-                  <CardContent className="flex-1">
-                    {program.description && (
-                      <p className="text-sm text-muted-foreground mb-4 line-clamp-3">
-                        {program.description}
-                      </p>
-                    )}
-                    <div className="space-y-2 text-sm">
-                      {program.start_date && (
-                        <div className="flex items-center gap-2 text-muted-foreground">
-                          <Calendar className="h-4 w-4" />
-                          <span>
-                            {format(new Date(program.start_date), "MMM d, yyyy")}
-                            {program.end_date &&
-                              ` - ${format(new Date(program.end_date), "MMM d, yyyy")}`}
-                          </span>
-                        </div>
+                    
+                    <CardHeader className="pb-2">
+                      <CardTitle className="text-xl leading-tight text-foreground">{program.name}</CardTitle>
+                    </CardHeader>
+                    <CardContent className="flex-1">
+                      {program.description && (
+                        <p className="text-sm text-muted-foreground mb-4 line-clamp-3">
+                          {program.description}
+                        </p>
                       )}
-                      {program.panchayath?.name && (
-                        <div className="flex items-center gap-2 text-muted-foreground">
-                          <MapPin className="h-4 w-4" />
-                          <span>{program.panchayath.name}</span>
-                        </div>
-                      )}
-                      {program.all_panchayaths && (
-                        <div className="flex items-center gap-2 text-muted-foreground">
-                          <MapPin className="h-4 w-4" />
-                          <span>All Panchayaths</span>
-                        </div>
-                      )}
-                    </div>
-                  </CardContent>
-                  <CardFooter>
-                    <Button asChild className="w-full">
-                      <Link to={`/program/${program.id}`}>View & Register</Link>
-                    </Button>
-                  </CardFooter>
-                </Card>
-              ))}
+                      <div className="space-y-2 text-sm">
+                        {program.start_date && (
+                          <div className="flex items-center gap-2 text-muted-foreground">
+                            <Calendar className="h-4 w-4 text-primary" />
+                            <span>
+                              {format(new Date(program.start_date), "MMM d, yyyy")}
+                              {program.end_date &&
+                                ` - ${format(new Date(program.end_date), "MMM d, yyyy")}`}
+                            </span>
+                          </div>
+                        )}
+                        {program.panchayath?.name && (
+                          <div className="flex items-center gap-2 text-muted-foreground">
+                            <MapPin className="h-4 w-4 text-primary" />
+                            <span>{program.panchayath.name}</span>
+                          </div>
+                        )}
+                        {program.all_panchayaths && (
+                          <div className="flex items-center gap-2 text-muted-foreground">
+                            <MapPin className="h-4 w-4 text-primary" />
+                            <span>All Panchayaths</span>
+                          </div>
+                        )}
+                      </div>
+                    </CardContent>
+                    <CardFooter>
+                      <Button asChild className="w-full">
+                        <Link to={`/program/${program.id}`}>View & Register</Link>
+                      </Button>
+                    </CardFooter>
+                  </Card>
+                );
+              })}
             </div>
           )}
         </div>
