@@ -240,8 +240,8 @@ export function BulkAgentFormDialog({
 
       const { data } = await supabase
         .from("pennyekart_agents")
-        .select("id, name, role, ward")
-        .eq("panchayath_id", panchayathFilter)
+        .select("id, name, role, ward, responsible_panchayath_ids")
+        .or(`panchayath_id.eq.${panchayathFilter},responsible_panchayath_ids.cs.{${panchayathFilter}}`)
         .eq("role", parentRole)
         .eq("is_active", true)
         .order("name");
@@ -263,8 +263,8 @@ export function BulkAgentFormDialog({
 
       const { data } = await supabase
         .from("pennyekart_agents")
-        .select("id, name, role, ward")
-        .eq("panchayath_id", selectedBulkPanchayath)
+        .select("id, name, role, ward, responsible_panchayath_ids")
+        .or(`panchayath_id.eq.${selectedBulkPanchayath},responsible_panchayath_ids.cs.{${selectedBulkPanchayath}}`)
         .eq("role", parentRole)
         .eq("is_active", true)
         .order("name");
