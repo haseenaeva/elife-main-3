@@ -12,6 +12,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
 import { 
   Users, 
@@ -20,7 +26,10 @@ import {
   Filter,
   Building2,
   Loader2,
-  ArrowLeft
+  ArrowLeft,
+  Download,
+  FileSpreadsheet,
+  FileText,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -38,6 +47,7 @@ import { AgentHierarchyTree } from "@/components/pennyekart/AgentHierarchyTree";
 import { BulkAgentFormDialog } from "@/components/pennyekart/BulkAgentFormDialog";
 import { AgentDetailsPanel } from "@/components/pennyekart/AgentDetailsPanel";
 import { toast } from "sonner";
+import { exportAgentsToXlsx, exportAgentsToPdf } from "@/lib/exportAgents";
 
 interface Panchayath {
   id: string;
@@ -186,10 +196,30 @@ export default function PennyekartAgentHierarchy() {
               Manage agent network
             </p>
           </div>
-          <Button onClick={handleAddAgent} size="sm" className="w-full sm:w-auto">
-            <Plus className="h-4 w-4 mr-2" />
-            Add Agent
-          </Button>
+          <div className="flex gap-2 w-full sm:w-auto">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" size="sm" className="flex-1 sm:flex-none" disabled={agents.length === 0}>
+                  <Download className="h-4 w-4 mr-2" />
+                  Export
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem onClick={() => exportAgentsToXlsx(agents, panchayaths)}>
+                  <FileSpreadsheet className="h-4 w-4 mr-2" />
+                  Export to Excel
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => exportAgentsToPdf(agents, panchayaths)}>
+                  <FileText className="h-4 w-4 mr-2" />
+                  Export to PDF
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+            <Button onClick={handleAddAgent} size="sm" className="flex-1 sm:flex-none">
+              <Plus className="h-4 w-4 mr-2" />
+              Add Agent
+            </Button>
+          </div>
         </div>
 
         {/* Stats - Scrollable on mobile */}
