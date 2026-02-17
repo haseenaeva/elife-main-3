@@ -122,13 +122,14 @@ interface AgentNodeProps {
   depth: number;
   onSelectAgent: (agent: PennyekartAgent) => void;
   selectedAgentId?: string;
+  visitedIds?: Set<string>;
 }
 
-function AgentNode({ agent, allAgents, depth, onSelectAgent, selectedAgentId }: AgentNodeProps) {
+function AgentNode({ agent, allAgents, depth, onSelectAgent, selectedAgentId, visitedIds = new Set() }: AgentNodeProps) {
   const [isExpanded, setIsExpanded] = useState(true);
   
-  // Find direct children
-  const children = allAgents.filter(a => a.parent_agent_id === agent.id);
+  // Find direct children, excluding self-references and cycles
+  const children = allAgents.filter(a => a.parent_agent_id === agent.id && a.id !== agent.id && !visitedIds.has(a.id));
   const hasChildren = children.length > 0;
   const isSelected = agent.id === selectedAgentId;
   
@@ -203,16 +204,21 @@ function AgentNode({ agent, allAgents, depth, onSelectAgent, selectedAgentId }: 
       
       {hasChildren && isExpanded && (
         <div className="border-l-2 border-muted ml-1.5 sm:ml-2.5">
-          {children.map(child => (
-            <AgentNode
-              key={child.id}
-              agent={child}
-              allAgents={allAgents}
-              depth={depth + 1}
-              onSelectAgent={onSelectAgent}
-              selectedAgentId={selectedAgentId}
-            />
-          ))}
+          {children.map(child => {
+            const newVisited = new Set(visitedIds);
+            newVisited.add(agent.id);
+            return (
+              <AgentNode
+                key={child.id}
+                agent={child}
+                allAgents={allAgents}
+                depth={depth + 1}
+                onSelectAgent={onSelectAgent}
+                selectedAgentId={selectedAgentId}
+                visitedIds={newVisited}
+              />
+            );
+          })}
         </div>
       )}
     </div>
