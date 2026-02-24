@@ -129,7 +129,7 @@ export default function SuperAdminDashboard() {
             </Link>
           </Button>
           <Button asChild variant="outline" className="h-auto py-3 sm:py-4">
-            <Link to="/divisions" className="flex flex-col items-center gap-1.5 sm:gap-2">
+            <Link to="/admin/admins" className="flex flex-col items-center gap-1.5 sm:gap-2">
               <Building2 className="h-5 w-5 sm:h-6 sm:w-6" />
               <span className="text-[10px] sm:text-sm">Divisions</span>
             </Link>
@@ -229,7 +229,7 @@ export default function SuperAdminDashboard() {
                 </CardDescription>
               </div>
               <Button asChild variant="outline" size="sm" className="w-full sm:w-auto">
-                <Link to="/divisions">View All</Link>
+                <Link to="/admin/admins">View All</Link>
               </Button>
             </CardHeader>
             <CardContent className="px-3 sm:px-6">
@@ -251,7 +251,11 @@ export default function SuperAdminDashboard() {
                     <TableBody>
                       {stats.divisions.slice(0, 5).map((div) => (
                         <TableRow key={div.id}>
-                          <TableCell className="font-medium text-xs sm:text-sm py-2 sm:py-4">{div.name}</TableCell>
+                          <TableCell className="font-medium text-xs sm:text-sm py-2 sm:py-4">
+                            <Link to={`/admin/division/${div.id}`} className="hover:underline text-primary">
+                              {div.name}
+                            </Link>
+                          </TableCell>
                           <TableCell className="text-right text-xs sm:text-sm py-2 sm:py-4">{div.programCount}</TableCell>
                           <TableCell className="text-right text-xs sm:text-sm py-2 sm:py-4 hidden sm:table-cell">{div.memberCount}</TableCell>
                           <TableCell className="py-2 sm:py-4">
