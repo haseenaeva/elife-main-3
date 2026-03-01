@@ -63,8 +63,9 @@ interface PanchayathNodeProps {
 function PanchayathNode({ panchayathName, agents, onSelectAgent, selectedAgentId }: PanchayathNodeProps) {
   const [isExpanded, setIsExpanded] = useState(true);
   
-  // Find team leaders (root agents)
-  const teamLeaders = agents.filter(a => a.role === "team_leader");
+  // Find root agents: those whose parent is not in this panchayath's agent list
+  const agentIds = new Set(agents.map(a => a.id));
+  const rootAgents = agents.filter(a => !a.parent_agent_id || !agentIds.has(a.parent_agent_id));
   
   return (
     <div className="border rounded-lg overflow-hidden">
@@ -86,30 +87,16 @@ function PanchayathNode({ panchayathName, agents, onSelectAgent, selectedAgentId
       
       {isExpanded && (
         <div className="p-1.5 sm:p-2">
-          {teamLeaders.length > 0 ? (
-            teamLeaders.map(leader => (
-              <AgentNode
-                key={leader.id}
-                agent={leader}
-                allAgents={agents}
-                depth={0}
-                onSelectAgent={onSelectAgent}
-                selectedAgentId={selectedAgentId}
-              />
-            ))
-          ) : (
-            // Show orphan agents when no team leaders exist
-            agents.map(agent => (
-              <AgentNode
-                key={agent.id}
-                agent={agent}
-                allAgents={agents}
-                depth={0}
-                onSelectAgent={onSelectAgent}
-                selectedAgentId={selectedAgentId}
-              />
-            ))
-          )}
+          {rootAgents.map(agent => (
+            <AgentNode
+              key={agent.id}
+              agent={agent}
+              allAgents={agents}
+              depth={0}
+              onSelectAgent={onSelectAgent}
+              selectedAgentId={selectedAgentId}
+            />
+          ))}
         </div>
       )}
     </div>
