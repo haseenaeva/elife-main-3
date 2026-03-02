@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/select";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { AlertCircle, Loader2 } from "lucide-react";
+import { Switch } from "@/components/ui/switch";
 
 interface Division {
   id: string;
@@ -34,12 +35,14 @@ interface AdminFormDialogProps {
     phone: string;
     password: string;
     divisionId: string;
+    isReadOnly: boolean;
   }) => Promise<void>;
   mode: "create" | "edit";
   initialData?: {
     fullName: string;
     phone: string;
     divisionId: string;
+    isReadOnly: boolean;
   };
 }
 
@@ -55,6 +58,7 @@ export function AdminFormDialog({
   const [phone, setPhone] = useState(initialData?.phone || "");
   const [password, setPassword] = useState("");
   const [divisionId, setDivisionId] = useState(initialData?.divisionId || "");
+  const [isReadOnly, setIsReadOnly] = useState(initialData?.isReadOnly ?? false);
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -63,6 +67,7 @@ export function AdminFormDialog({
     setPhone("");
     setPassword("");
     setDivisionId("");
+    setIsReadOnly(false);
     setError("");
   };
 
@@ -72,6 +77,7 @@ export function AdminFormDialog({
       setFullName(initialData.fullName);
       setPhone(initialData.phone);
       setDivisionId(initialData.divisionId);
+      setIsReadOnly(initialData.isReadOnly ?? false);
       setPassword("");
       setError("");
     }
@@ -85,7 +91,7 @@ export function AdminFormDialog({
     setIsSubmitting(true);
 
     try {
-      await onSubmit({ fullName, phone, password, divisionId });
+      await onSubmit({ fullName, phone, password, divisionId, isReadOnly });
       handleOpenChange(false);
     } catch (err: any) {
       setError(err.message || `Failed to ${mode} admin`);
@@ -168,6 +174,20 @@ export function AdminFormDialog({
                   ))}
                 </SelectContent>
               </Select>
+            </div>
+
+            <div className="flex items-center justify-between rounded-lg border p-3">
+              <div className="space-y-0.5">
+                <Label htmlFor="readOnly">Access Level</Label>
+                <p className="text-xs text-muted-foreground">
+                  {isReadOnly ? "Read Only — Can only view data" : "Full Access — Can create, edit & delete"}
+                </p>
+              </div>
+              <Switch
+                id="readOnly"
+                checked={!isReadOnly}
+                onCheckedChange={(checked) => setIsReadOnly(!checked)}
+              />
             </div>
           </div>
 

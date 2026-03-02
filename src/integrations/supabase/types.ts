@@ -24,6 +24,7 @@ export type Database = {
           full_name: string | null
           id: string
           is_active: boolean | null
+          is_read_only: boolean
           password_hash: string | null
           phone: string | null
           user_id: string | null
@@ -37,6 +38,7 @@ export type Database = {
           full_name?: string | null
           id?: string
           is_active?: boolean | null
+          is_read_only?: boolean
           password_hash?: string | null
           phone?: string | null
           user_id?: string | null
@@ -50,6 +52,7 @@ export type Database = {
           full_name?: string | null
           id?: string
           is_active?: boolean | null
+          is_read_only?: boolean
           password_hash?: string | null
           phone?: string | null
           user_id?: string | null

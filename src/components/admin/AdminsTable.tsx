@@ -20,6 +20,7 @@ interface Admin {
   user_id: string | null;
   division_id: string;
   is_active: boolean;
+  is_read_only?: boolean;
   created_at: string;
   phone?: string;
   full_name?: string;
@@ -66,6 +67,7 @@ export function AdminsTable({
               <TableHead>Name</TableHead>
               <TableHead>Phone</TableHead>
               <TableHead>Division</TableHead>
+              <TableHead>Access Level</TableHead>
               <TableHead>Permissions</TableHead>
               <TableHead>Status</TableHead>
               <TableHead>Created</TableHead>
@@ -75,7 +77,7 @@ export function AdminsTable({
           <TableBody>
             {admins.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={7} className="text-center py-8 text-muted-foreground">
+                <TableCell colSpan={8} className="text-center py-8 text-muted-foreground">
                   No admins found. Create your first admin to get started.
                 </TableCell>
               </TableRow>
@@ -87,6 +89,11 @@ export function AdminsTable({
                   </TableCell>
                   <TableCell className="whitespace-nowrap">{admin.phone || "N/A"}</TableCell>
                   <TableCell className="whitespace-nowrap">{admin.division?.name || "N/A"}</TableCell>
+                  <TableCell>
+                    <Badge variant={admin.is_read_only ? "outline" : "default"} className="text-[10px]">
+                      {admin.is_read_only ? "Read Only" : "Full Access"}
+                    </Badge>
+                  </TableCell>
                   <TableCell>
                     <div className="flex items-center gap-1.5">
                       {admin.access_all_divisions ? (
