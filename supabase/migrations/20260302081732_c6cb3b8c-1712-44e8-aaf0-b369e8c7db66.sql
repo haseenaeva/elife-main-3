@@ -1,0 +1,1 @@
+ALTER TABLE public.admins ADD COLUMN is_read_only boolean NOT NULL DEFAULT false;

@@ -12,6 +12,7 @@ interface AdminData {
   full_name?: string | null;
   access_all_divisions?: boolean;
   additional_division_ids?: string[];
+  is_read_only?: boolean;
 }
 
 interface AuthContextType {
@@ -24,6 +25,7 @@ interface AuthContextType {
   isMember: boolean;
   adminToken: string | null;
   adminData: AdminData | null;
+  isReadOnly: boolean;
   signIn: (email: string, password: string) => Promise<{ error: Error | null }>;
   signInAsAdmin: (token: string, admin: AdminData) => void;
   signOut: () => Promise<void>;
@@ -99,6 +101,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             full_name: data.admin.full_name,
             access_all_divisions: data.admin.access_all_divisions,
             additional_division_ids: data.admin.additional_division_ids,
+            is_read_only: data.admin.is_read_only,
           };
           setAdminData(updatedAdmin);
           localStorage.setItem(ADMIN_DATA_KEY, JSON.stringify(updatedAdmin));
@@ -179,6 +182,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const isSuperAdmin = roles.includes("super_admin");
   const isAdmin = roles.includes("admin") || isSuperAdmin;
   const isMember = roles.includes("member") || isAdmin;
+  const isReadOnly = adminData?.is_read_only ?? false;
 
   return (
     <AuthContext.Provider
@@ -192,6 +196,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         isMember,
         adminToken,
         adminData,
+        isReadOnly,
         signIn,
         signInAsAdmin,
         signOut,

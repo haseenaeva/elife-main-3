@@ -25,6 +25,7 @@ interface Admin {
   user_id: string | null;
   division_id: string;
   is_active: boolean;
+  is_read_only?: boolean;
   created_at: string;
   phone?: string;
   full_name?: string;
@@ -91,7 +92,7 @@ export default function AdminsManagement() {
       .join("");
   };
 
-  const handleCreate = async (data: { fullName: string; phone: string; password: string; divisionId: string }) => {
+  const handleCreate = async (data: { fullName: string; phone: string; password: string; divisionId: string; isReadOnly: boolean }) => {
     if (!data.phone || data.phone.length < 10) throw new Error("Please enter a valid phone number");
     if (!data.password || data.password.length < 6) throw new Error("Password must be at least 6 characters");
 
@@ -106,6 +107,7 @@ export default function AdminsManagement() {
       phone,
       password_hash: passwordHash,
       full_name: data.fullName,
+      is_read_only: data.isReadOnly,
     } as any);
 
     if (error) throw error;
@@ -113,7 +115,7 @@ export default function AdminsManagement() {
     fetchAdmins();
   };
 
-  const handleEdit = async (data: { fullName: string; phone: string; password: string; divisionId: string }) => {
+  const handleEdit = async (data: { fullName: string; phone: string; password: string; divisionId: string; isReadOnly: boolean }) => {
     if (!editingAdmin) return;
     const phone = data.phone.replace(/\s+/g, "").trim();
 
@@ -122,7 +124,7 @@ export default function AdminsManagement() {
       if (existing) throw new Error("An admin with this phone number already exists");
     }
 
-    const updateData: any = { full_name: data.fullName, phone, division_id: data.divisionId };
+    const updateData: any = { full_name: data.fullName, phone, division_id: data.divisionId, is_read_only: data.isReadOnly };
     if (data.password) {
       if (data.password.length < 6) throw new Error("Password must be at least 6 characters");
       updateData.password_hash = await hashPassword(data.password);
@@ -234,6 +236,7 @@ export default function AdminsManagement() {
             fullName: editingAdmin.full_name || "",
             phone: editingAdmin.phone || "",
             divisionId: editingAdmin.division_id,
+            isReadOnly: editingAdmin.is_read_only ?? false,
           } : undefined}
         />
 
