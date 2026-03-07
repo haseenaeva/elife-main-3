@@ -109,6 +109,7 @@ export default function AdminsManagement() {
       password_hash: passwordHash,
       full_name: data.fullName,
       is_read_only: data.isReadOnly,
+      cash_collection_enabled: data.cashCollectionEnabled,
     } as any);
 
     if (error) throw error;
