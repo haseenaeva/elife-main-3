@@ -89,18 +89,8 @@ export default function CashCollections() {
   const [showReceiptDialog, setShowReceiptDialog] = useState(false);
   const [lastReceipt, setLastReceipt] = useState<Collection | null>(null);
 
-  if (!isAdmin && !isSuperAdmin) return <Navigate to="/unauthorized" replace />;
-
-  const hasAccess =
-    isSuperAdmin ||
-    adminData?.access_all_divisions ||
-    adminData?.division_id === divisionId ||
-    (adminData?.additional_division_ids || []).includes(divisionId || "");
-
-  if (!hasAccess) return <Navigate to="/unauthorized" replace />;
-
   const invokeFunction = useCallback(
-    async (params: Record<string, string>, method = "GET", body?: any) => {
+    async (params: Record<string, string>, method: "GET" | "POST" | "PUT" | "DELETE" = "GET", body?: any) => {
       const queryStr = new URLSearchParams(params).toString();
       const { data, error } = await supabase.functions.invoke("admin-cash-collections?" + queryStr, {
         method,
