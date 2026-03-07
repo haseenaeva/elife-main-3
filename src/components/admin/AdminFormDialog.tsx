@@ -61,6 +61,7 @@ export function AdminFormDialog({
   const [password, setPassword] = useState("");
   const [divisionId, setDivisionId] = useState(initialData?.divisionId || "");
   const [isReadOnly, setIsReadOnly] = useState(initialData?.isReadOnly ?? false);
+  const [cashCollectionEnabled, setCashCollectionEnabled] = useState(initialData?.cashCollectionEnabled ?? false);
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
