@@ -68,6 +68,11 @@ interface Report {
 export default function CashCollections() {
   const { divisionId } = useParams<{ divisionId: string }>();
   const { isAdmin, isSuperAdmin, adminToken, adminData, isReadOnly } = useAuth();
+
+  // Block access if cash collection is not enabled for this admin
+  if (isAdmin && !isSuperAdmin && !adminData?.cash_collection_enabled) {
+    return <Navigate to="/admin-dashboard" replace />;
+  }
   const { toast } = useToast();
 
   const [activeTab, setActiveTab] = useState("collect");
