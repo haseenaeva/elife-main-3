@@ -168,6 +168,16 @@ const App = () => (
               }
             />
 
+            {/* Super Admin Cash Collections - All Divisions */}
+            <Route
+              path="/super-admin/cash-collections"
+              element={
+                <ProtectedRoute requiredRoles={["super_admin"]}>
+                  <SuperAdminCashCollections />
+                </ProtectedRoute>
+              }
+            />
+
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
