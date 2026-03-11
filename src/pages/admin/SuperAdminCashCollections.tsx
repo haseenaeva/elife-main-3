@@ -69,6 +69,8 @@ export default function SuperAdminCashCollections() {
   const [isLoading, setIsLoading] = useState(false);
   const [report, setReport] = useState<Report | null>(null);
   const [filterStatus, setFilterStatus] = useState<string>("all");
+  const [filterDivision, setFilterDivision] = useState<string>("all");
+  const [searchMobile, setSearchMobile] = useState("");
 
   // Edit state
   const [editDialog, setEditDialog] = useState(false);
