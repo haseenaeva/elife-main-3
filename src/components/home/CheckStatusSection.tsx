@@ -86,7 +86,7 @@ export function CheckStatusSection() {
       // Search pennyekart agents by mobile
       const { data: agentData } = await supabase
         .from("pennyekart_agents")
-        .select("id, name, mobile, role, ward, panchayath:panchayaths(name)")
+        .select("id, name, mobile, role, ward, customer_count, parent_agent_id, panchayath:panchayaths(name)")
         .eq("mobile", cleaned)
         .eq("is_active", true)
         .limit(1);
