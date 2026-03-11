@@ -134,6 +134,18 @@ export default function SuperAdminCashCollections() {
     if (activeTab === "report") loadReport();
   }, [activeTab, loadCollections, loadReport]);
 
+  // Derive unique divisions from collections
+  const uniqueDivisions = Array.from(
+    new Map(collections.filter(c => c.divisions?.name).map(c => [c.division_id, c.divisions!.name])).entries()
+  ).sort((a, b) => a[1].localeCompare(b[1]));
+
+  // Client-side filtering
+  const filteredCollections = collections.filter(c => {
+    if (filterDivision !== "all" && c.division_id !== filterDivision) return false;
+    if (searchMobile && !c.mobile.includes(searchMobile) && !c.person_name.toLowerCase().includes(searchMobile.toLowerCase()) && !c.receipt_number?.toLowerCase().includes(searchMobile.toLowerCase())) return false;
+    return true;
+  });
+
   if (!isSuperAdmin) return <Navigate to="/unauthorized" replace />;
 
   const openEdit = (c: Collection) => {
