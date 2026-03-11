@@ -238,22 +238,44 @@ export default function SuperAdminCashCollections() {
 
           <TabsContent value="collections">
             <Card>
-              <CardHeader className="pb-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-                <div>
-                  <CardTitle className="text-lg">All Collections</CardTitle>
-                  <CardDescription>Collections from all divisions</CardDescription>
+              <CardHeader className="pb-3">
+                <div className="flex flex-col gap-3">
+                  <div>
+                    <CardTitle className="text-lg">All Collections</CardTitle>
+                    <CardDescription>Collections from all divisions</CardDescription>
+                  </div>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <Input
+                      placeholder="Search name, mobile, receipt..."
+                      value={searchMobile}
+                      onChange={(e) => setSearchMobile(e.target.value)}
+                      className="w-[220px] h-9"
+                    />
+                    <Select value={filterDivision} onValueChange={setFilterDivision}>
+                      <SelectTrigger className="w-[160px] h-9">
+                        <SelectValue placeholder="Division" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">All Divisions</SelectItem>
+                        {uniqueDivisions.map(([id, name]) => (
+                          <SelectItem key={id} value={id}>{name}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <Select value={filterStatus} onValueChange={setFilterStatus}>
+                      <SelectTrigger className="w-[140px] h-9">
+                        <SelectValue placeholder="Status" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">All Status</SelectItem>
+                        <SelectItem value="pending">Pending</SelectItem>
+                        <SelectItem value="verified">Verified</SelectItem>
+                        <SelectItem value="submitted">Submitted</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <span className="text-xs text-muted-foreground ml-auto">{filteredCollections.length} results</span>
+                  </div>
                 </div>
-                <Select value={filterStatus} onValueChange={(v) => setFilterStatus(v)}>
-                  <SelectTrigger className="w-[140px]">
-                    <SelectValue placeholder="Filter status" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All Status</SelectItem>
-                    <SelectItem value="pending">Pending</SelectItem>
-                    <SelectItem value="verified">Verified</SelectItem>
-                    <SelectItem value="submitted">Submitted</SelectItem>
-                  </SelectContent>
-                </Select>
               </CardHeader>
               <CardContent>
                 {isLoading ? (
