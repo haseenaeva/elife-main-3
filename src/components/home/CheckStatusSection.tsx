@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
+import { AgentWorkLog } from "./AgentWorkLog";
 
 interface CollectionResult {
   id: string;
@@ -24,6 +25,8 @@ interface AgentResult {
   mobile: string;
   role: string;
   ward: string;
+  customer_count: number;
+  parent_agent_id: string | null;
   panchayath?: { name: string } | null;
 }
 
@@ -83,7 +86,7 @@ export function CheckStatusSection() {
       // Search pennyekart agents by mobile
       const { data: agentData } = await supabase
         .from("pennyekart_agents")
-        .select("id, name, mobile, role, ward, panchayath:panchayaths(name)")
+        .select("id, name, mobile, role, ward, customer_count, parent_agent_id, panchayath:panchayaths(name)")
         .eq("mobile", cleaned)
         .eq("is_active", true)
         .limit(1);
@@ -196,43 +199,9 @@ export function CheckStatusSection() {
                   </Card>
                 )}
 
-                {/* Agent Info */}
+                {/* Agent Info + Work Log */}
                 {agentInfo && (
-                  <Card>
-                    <CardHeader className="pb-3">
-                      <CardTitle className="text-base flex items-center gap-2">
-                        <Users className="h-4 w-4 text-primary" />
-                        Pennyekart Agent
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="flex items-center gap-3 p-3 rounded-lg border bg-card">
-                        <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
-                          <User className="h-5 w-5 text-primary" />
-                        </div>
-                        <div className="min-w-0 flex-1">
-                          <p className="font-medium text-sm">{agentInfo.name}</p>
-                          <div className="flex items-center gap-2 flex-wrap mt-1">
-                            <Badge variant="secondary" className="text-[10px]">
-                              {ROLE_LABELS[agentInfo.role] || agentInfo.role}
-                            </Badge>
-                            {agentInfo.panchayath?.name && (
-                              <span className="text-xs text-muted-foreground flex items-center gap-0.5">
-                                <Building2 className="h-3 w-3" />
-                                {agentInfo.panchayath.name}
-                              </span>
-                            )}
-                            {agentInfo.ward !== "N/A" && (
-                              <span className="text-xs text-muted-foreground flex items-center gap-0.5">
-                                <MapPin className="h-3 w-3" />
-                                Ward {agentInfo.ward}
-                              </span>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
+                  <AgentWorkLog agent={agentInfo} />
                 )}
               </>
             )}
