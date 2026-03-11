@@ -199,43 +199,9 @@ export function CheckStatusSection() {
                   </Card>
                 )}
 
-                {/* Agent Info */}
+                {/* Agent Info + Work Log */}
                 {agentInfo && (
-                  <Card>
-                    <CardHeader className="pb-3">
-                      <CardTitle className="text-base flex items-center gap-2">
-                        <Users className="h-4 w-4 text-primary" />
-                        Pennyekart Agent
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="flex items-center gap-3 p-3 rounded-lg border bg-card">
-                        <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
-                          <User className="h-5 w-5 text-primary" />
-                        </div>
-                        <div className="min-w-0 flex-1">
-                          <p className="font-medium text-sm">{agentInfo.name}</p>
-                          <div className="flex items-center gap-2 flex-wrap mt-1">
-                            <Badge variant="secondary" className="text-[10px]">
-                              {ROLE_LABELS[agentInfo.role] || agentInfo.role}
-                            </Badge>
-                            {agentInfo.panchayath?.name && (
-                              <span className="text-xs text-muted-foreground flex items-center gap-0.5">
-                                <Building2 className="h-3 w-3" />
-                                {agentInfo.panchayath.name}
-                              </span>
-                            )}
-                            {agentInfo.ward !== "N/A" && (
-                              <span className="text-xs text-muted-foreground flex items-center gap-0.5">
-                                <MapPin className="h-3 w-3" />
-                                Ward {agentInfo.ward}
-                              </span>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
+                  <AgentWorkLog agent={agentInfo} />
                 )}
               </>
             )}
