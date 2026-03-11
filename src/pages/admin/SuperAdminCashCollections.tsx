@@ -339,30 +339,58 @@ export default function SuperAdminCashCollections() {
 
           <TabsContent value="report">
             <div className="space-y-4">
-              {report && (
-                <div className="grid gap-3 grid-cols-2 lg:grid-cols-4">
-                  <Card><CardContent className="p-4 text-center">
-                    <p className="text-2xl font-bold text-foreground">₹{report.totalCollected.toLocaleString()}</p>
-                    <p className="text-xs text-muted-foreground">Total Collected</p>
-                    <Badge variant="outline" className="mt-1">{report.totalEntries} entries</Badge>
-                  </CardContent></Card>
-                  <Card><CardContent className="p-4 text-center">
-                    <p className="text-2xl font-bold text-amber-600">₹{report.pendingAmount.toLocaleString()}</p>
-                    <p className="text-xs text-muted-foreground">Pending</p>
-                    <Badge variant="secondary" className="mt-1">{report.pendingCount}</Badge>
-                  </CardContent></Card>
-                  <Card><CardContent className="p-4 text-center">
-                    <p className="text-2xl font-bold text-green-600">₹{report.verifiedAmount.toLocaleString()}</p>
-                    <p className="text-xs text-muted-foreground">Verified</p>
-                    <Badge className="mt-1 bg-green-600">{report.verifiedCount}</Badge>
-                  </CardContent></Card>
-                  <Card><CardContent className="p-4 text-center">
-                    <p className="text-2xl font-bold text-blue-600">₹{report.submittedAmount.toLocaleString()}</p>
-                    <p className="text-xs text-muted-foreground">Submitted</p>
-                    <Badge className="mt-1 bg-blue-600">{report.submittedCount}</Badge>
-                  </CardContent></Card>
-                </div>
-              )}
+              <div className="flex flex-wrap items-center gap-2">
+                <Select value={filterDivision} onValueChange={setFilterDivision}>
+                  <SelectTrigger className="w-[180px] h-9">
+                    <SelectValue placeholder="Division" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Divisions</SelectItem>
+                    {uniqueDivisions.map(([id, name]) => (
+                      <SelectItem key={id} value={id}>{name}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <Input
+                  placeholder="Search name, mobile, receipt..."
+                  value={searchMobile}
+                  onChange={(e) => setSearchMobile(e.target.value)}
+                  className="w-[220px] h-9"
+                />
+                <span className="text-xs text-muted-foreground ml-auto">{filteredCollections.length} results</span>
+              </div>
+
+              {(() => {
+                const filtered = filteredCollections;
+                const totalCollected = filtered.reduce((s, c) => s + Number(c.amount), 0);
+                const pending = filtered.filter(c => c.status === "pending");
+                const verified = filtered.filter(c => c.status === "verified");
+                const submitted = filtered.filter(c => c.status === "submitted");
+                return (
+                  <div className="grid gap-3 grid-cols-2 lg:grid-cols-4">
+                    <Card><CardContent className="p-4 text-center">
+                      <p className="text-2xl font-bold text-foreground">₹{totalCollected.toLocaleString()}</p>
+                      <p className="text-xs text-muted-foreground">Total Collected</p>
+                      <Badge variant="outline" className="mt-1">{filtered.length} entries</Badge>
+                    </CardContent></Card>
+                    <Card><CardContent className="p-4 text-center">
+                      <p className="text-2xl font-bold text-amber-600">₹{pending.reduce((s, c) => s + Number(c.amount), 0).toLocaleString()}</p>
+                      <p className="text-xs text-muted-foreground">Pending</p>
+                      <Badge variant="secondary" className="mt-1">{pending.length}</Badge>
+                    </CardContent></Card>
+                    <Card><CardContent className="p-4 text-center">
+                      <p className="text-2xl font-bold text-green-600">₹{verified.reduce((s, c) => s + Number(c.amount), 0).toLocaleString()}</p>
+                      <p className="text-xs text-muted-foreground">Verified</p>
+                      <Badge className="mt-1 bg-green-600">{verified.length}</Badge>
+                    </CardContent></Card>
+                    <Card><CardContent className="p-4 text-center">
+                      <p className="text-2xl font-bold text-blue-600">₹{submitted.reduce((s, c) => s + Number(c.amount), 0).toLocaleString()}</p>
+                      <p className="text-xs text-muted-foreground">Submitted</p>
+                      <Badge className="mt-1 bg-blue-600">{submitted.length}</Badge>
+                    </CardContent></Card>
+                  </div>
+                );
+              })()}
 
               <Card>
                 <CardHeader className="pb-3">
