@@ -95,14 +95,22 @@ export function CheckStatusSection() {
       setCollections(collectionsWithDivision);
 
       // Search pennyekart agents by mobile
-      const { data: agentData } = await supabase
-        .from("pennyekart_agents")
-        .select("id, name, mobile, role, ward, customer_count, parent_agent_id, panchayath:panchayaths(name)")
-        .eq("mobile", cleaned)
-        .eq("is_active", true)
-        .limit(1);
+      const [agentRes, oldPayRes] = await Promise.all([
+        supabase
+          .from("pennyekart_agents")
+          .select("id, name, mobile, role, ward, customer_count, parent_agent_id, panchayath:panchayaths(name)")
+          .eq("mobile", cleaned)
+          .eq("is_active", true)
+          .limit(1),
+        supabase
+          .from("old_payments")
+          .select("id, name, mobile, category, fee_paid, approved_by, approved_date")
+          .eq("mobile", cleaned)
+          .order("approved_date", { ascending: false }),
+      ]);
 
-      setAgentInfo(agentData && agentData.length > 0 ? (agentData[0] as unknown as AgentResult) : null);
+      setAgentInfo(agentRes.data && agentRes.data.length > 0 ? (agentRes.data[0] as unknown as AgentResult) : null);
+      setOldPayments((oldPayRes.data as unknown as OldPaymentResult[]) || []);
     } catch (err) {
       console.error("Search error:", err);
     } finally {
