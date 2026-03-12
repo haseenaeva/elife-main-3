@@ -30,7 +30,8 @@ import {
   Clock,
   Plus,
   IndianRupee,
-  FileSpreadsheet
+  FileSpreadsheet,
+  BarChart3
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { formatDistanceToNow } from "date-fns";
