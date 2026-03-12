@@ -29,6 +29,7 @@ import DivisionAdminDashboard from "./pages/admin/DivisionAdminDashboard";
 import CashCollections from "./pages/admin/CashCollections";
 import SuperAdminCashCollections from "./pages/admin/SuperAdminCashCollections";
 import OldPaymentsUpload from "./pages/admin/OldPaymentsUpload";
+import SalesReport from "./pages/admin/SalesReport";
 
 const queryClient = new QueryClient();
 
