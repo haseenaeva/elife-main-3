@@ -19,6 +19,16 @@ interface CollectionResult {
   division?: { name: string } | null;
 }
 
+interface OldPaymentResult {
+  id: string;
+  name: string;
+  mobile: string;
+  category: string;
+  fee_paid: number;
+  approved_by: string;
+  approved_date: string;
+}
+
 interface AgentResult {
   id: string;
   name: string;
@@ -48,6 +58,7 @@ export function CheckStatusSection() {
   const [isSearching, setIsSearching] = useState(false);
   const [searched, setSearched] = useState(false);
   const [collections, setCollections] = useState<CollectionResult[]>([]);
+  const [oldPayments, setOldPayments] = useState<OldPaymentResult[]>([]);
   const [agentInfo, setAgentInfo] = useState<AgentResult | null>(null);
 
   const handleSearch = async () => {
@@ -84,14 +95,22 @@ export function CheckStatusSection() {
       setCollections(collectionsWithDivision);
 
       // Search pennyekart agents by mobile
-      const { data: agentData } = await supabase
-        .from("pennyekart_agents")
-        .select("id, name, mobile, role, ward, customer_count, parent_agent_id, panchayath:panchayaths(name)")
-        .eq("mobile", cleaned)
-        .eq("is_active", true)
-        .limit(1);
+      const [agentRes, oldPayRes] = await Promise.all([
+        supabase
+          .from("pennyekart_agents")
+          .select("id, name, mobile, role, ward, customer_count, parent_agent_id, panchayath:panchayaths(name)")
+          .eq("mobile", cleaned)
+          .eq("is_active", true)
+          .limit(1),
+        supabase
+          .from("old_payments")
+          .select("id, name, mobile, category, fee_paid, approved_by, approved_date")
+          .eq("mobile", cleaned)
+          .order("approved_date", { ascending: false }),
+      ]);
 
-      setAgentInfo(agentData && agentData.length > 0 ? (agentData[0] as unknown as AgentResult) : null);
+      setAgentInfo(agentRes.data && agentRes.data.length > 0 ? (agentRes.data[0] as unknown as AgentResult) : null);
+      setOldPayments((oldPayRes.data as unknown as OldPaymentResult[]) || []);
     } catch (err) {
       console.error("Search error:", err);
     } finally {
@@ -100,7 +119,7 @@ export function CheckStatusSection() {
     }
   };
 
-  const hasResults = collections.length > 0 || agentInfo;
+  const hasResults = collections.length > 0 || oldPayments.length > 0 || agentInfo;
 
   return (
     <section className="py-12 lg:py-16 bg-muted/30">
@@ -195,6 +214,40 @@ export function CheckStatusSection() {
                           </div>
                         );
                       })}
+                    </CardContent>
+                  </Card>
+                )}
+
+                {/* Old Payment Records */}
+                {oldPayments.length > 0 && (
+                  <Card>
+                    <CardHeader className="pb-3">
+                      <CardTitle className="text-base flex items-center gap-2">
+                        <IndianRupee className="h-4 w-4 text-primary" />
+                        Previous Payment Records ({oldPayments.length})
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-3">
+                      {oldPayments.map((p) => (
+                        <div
+                          key={p.id}
+                          className="flex items-start justify-between gap-3 p-3 rounded-lg border bg-card"
+                        >
+                          <div className="min-w-0 flex-1">
+                            <span className="font-medium text-sm">{p.name}</span>
+                            <div className="text-xs text-muted-foreground mt-1 space-y-0.5">
+                              {p.category && <p>Category: {p.category}</p>}
+                              {p.approved_by && <p>Approved By: {p.approved_by}</p>}
+                              {p.approved_date && <p>Date: {p.approved_date}</p>}
+                            </div>
+                          </div>
+                          {p.fee_paid > 0 && (
+                            <span className="font-bold text-sm whitespace-nowrap">
+                              ₹{Number(p.fee_paid).toLocaleString("en-IN")}
+                            </span>
+                          )}
+                        </div>
+                      ))}
                     </CardContent>
                   </Card>
                 )}

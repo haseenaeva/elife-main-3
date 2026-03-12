@@ -29,7 +29,8 @@ import {
   TrendingUp,
   Clock,
   Plus,
-  IndianRupee
+  IndianRupee,
+  FileSpreadsheet
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { formatDistanceToNow } from "date-fns";
@@ -165,6 +166,12 @@ export default function SuperAdminDashboard() {
             <Link to="/super-admin/cash-collections" className="flex flex-col items-center gap-1.5 sm:gap-2">
               <IndianRupee className="h-5 w-5 sm:h-6 sm:w-6" />
               <span className="text-[10px] sm:text-sm">Cash</span>
+            </Link>
+          </Button>
+          <Button asChild variant="outline" className="h-auto py-3 sm:py-4">
+            <Link to="/super-admin/old-payments" className="flex flex-col items-center gap-1.5 sm:gap-2">
+              <FileSpreadsheet className="h-5 w-5 sm:h-6 sm:w-6" />
+              <span className="text-[10px] sm:text-sm">Old Payments</span>
             </Link>
           </Button>
           <Button asChild variant="outline" className="h-auto py-3 sm:py-4 hidden sm:flex">
