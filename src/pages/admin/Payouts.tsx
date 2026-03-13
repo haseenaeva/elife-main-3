@@ -341,6 +341,7 @@ export default function Payouts() {
     return <Navigate to="/unauthorized" replace />;
   }
 
+  if (authLoading) {
     return (
       <Layout>
         <div className="flex items-center justify-center min-h-screen">
