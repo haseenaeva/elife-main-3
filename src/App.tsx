@@ -30,6 +30,7 @@ import CashCollections from "./pages/admin/CashCollections";
 import SuperAdminCashCollections from "./pages/admin/SuperAdminCashCollections";
 import OldPaymentsUpload from "./pages/admin/OldPaymentsUpload";
 import SalesReport from "./pages/admin/SalesReport";
+import Payouts from "./pages/admin/Payouts";
 
 const queryClient = new QueryClient();
 
@@ -196,6 +197,16 @@ const App = () => (
               element={
                 <ProtectedRoute requiredRoles={["super_admin"]}>
                   <SalesReport />
+                </ProtectedRoute>
+              }
+            />
+
+            {/* Pennyekart Payouts - Super Admin only */}
+            <Route
+              path="/admin/payouts"
+              element={
+                <ProtectedRoute requiredRoles={["super_admin"]}>
+                  <Payouts />
                 </ProtectedRoute>
               }
             />
